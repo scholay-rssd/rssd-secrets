@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "keychainService": "rssd-secrets",
+  "serverDirectory": "/etc/rssd/secrets",
+  "components": {
+    "publishing": "Website publication from a workspace (CLI, worker or desktop child process)",
+    "headless": "Linux headless production (npm run headless)",
+    "desktop": "Installed desktop app and the scripts it starts",
+    "desktop-release": "Desktop builds that sign the app and its updates",
+    "admin": "Administration server (admin/server.mjs)",
+    "admin-worker": "Publication worker service (admin/worker.mjs)",
+    "admin-labels": "Labels collector service (admin/labels-collector.mjs)",
+    "admin-cli": "Administrator import CLI on a workstation (admin/cli.mjs)",
+    "receiver": "RSSD receiver service (receiver/server.mjs)"
+  },
+  "secrets": [
+    {
+      "name": "SCHOLAY_TODAY_TOKEN",
+      "type": "value",
+      "components": ["publishing", "headless"],
+      "group": "website-token",
+      "required": false,
+      "purpose": "Website publication token. Prefer SCHOLAY_TODAY_TOKEN_FILE; child processes that must stay neutral remove it."
+    },
+    {
+      "name": "SCHOLAY_TODAY_TOKEN_FILE",
+      "type": "file",
+      "components": ["publishing", "headless"],
+      "group": "website-token",
+      "required": false,
+      "purpose": "Path to a private (0600) file holding the website publication token."
+    },
+    {
+      "name": "RSSD_CENTER_TOKEN",
+      "type": "value",
+      "components": ["publishing", "headless"],
+      "required": false,
+      "purpose": "RSSD center device credential (rssd_device_…). The desktop app reads it from its own credential store and injects it into child processes; set it only for headless or CLI runs."
+    },
+    {
+      "name": "SCHOLAY_AUTH_DIR",
+      "type": "location",
+      "components": ["headless"],
+      "required": false,
+      "purpose": "Directory of per-site credential files written by `npm run headless -- spaces`. Defaults to ~/.local/share/scholay/auth."
+    },
+    {
+      "name": "SCHOLAY_AUTH_FILE",
+      "type": "file",
+      "components": ["headless"],
+      "required": false,
+      "purpose": "Explicit per-site credential file, overriding the SCHOLAY_AUTH_DIR layout."
+    },
+    {
+      "name": "SCHOLAY_TRANSLATION_CONFIG",
+      "type": "file",
+      "components": ["publishing"],
+      "required": false,
+      "purpose": "Translation service configuration, which may contain service credentials."
+    },
+    {
+      "name": "SCHOLAY_CLOUD_QUEUE_CONFIG",
+      "type": "file",
+      "components": ["publishing"],
+      "required": false,
+      "purpose": "Cloud publication queue configuration; references per-site private token files."
+    },
+    {
+      "name": "SCHOLAY_INGEST_TOKEN",
+      "type": "value",
+      "components": ["admin-cli"],
+      "required": true,
+      "purpose": "Bearer token for POST /manage/api/import."
+    },
+    {
+      "name": "SCHOLAY_WORKER_TOKEN",
+      "type": "value",
+      "components": ["admin-worker"],
+      "required": true,
+      "purpose": "Bearer token the publication worker uses against the administration API."
+    },
+    {
+      "name": "SCHOLAY_TIKHUB_KEY",
+      "type": "value",
+      "components": ["admin-labels"],
+      "required": true,
+      "purpose": "TikHub API key for the labels collector. Server-only; never part of a release archive."
+    },
+    {
+      "name": "SCHOLAY_COMMUNITY_WEBHOOK_SECRET",
+      "type": "value",
+      "components": ["admin"],
+      "required": false,
+      "purpose": "HMAC secret verifying community-links webhooks."
+    },
+    {
+      "name": "RSSD_RECEIVER_CONFIG",
+      "type": "file",
+      "components": ["receiver"],
+      "required": true,
+      "purpose": "Receiver configuration (site token hashes and binding key file paths)."
+    },
+    {
+      "name": "TAURI_SIGNING_PRIVATE_KEY",
+      "type": "value",
+      "components": ["desktop-release"],
+      "group": "updater-key",
+      "required": false,
+      "purpose": "Updater signing private key (content or path). Without any updater key, builds are unsigned for updates."
+    },
+    {
+      "name": "TAURI_SIGNING_PRIVATE_KEY_PASSWORD",
+      "type": "value",
+      "components": ["desktop-release"],
+      "required": false,
+      "purpose": "Password of the updater signing key; empty when the key has none."
+    },
+    {
+      "name": "SCHOLAY_UPDATER_KEY_FILE",
+      "type": "file",
+      "components": ["desktop-release"],
+      "group": "updater-key",
+      "required": false,
+      "purpose": "Path to the updater signing private key file."
+    },
+    {
+      "name": "APPLE_SIGNING_IDENTITY",
+      "type": "value",
+      "sensitive": false,
+      "components": ["desktop-release"],
+      "required": false,
+      "purpose": "macOS code-signing identity name or hash; the key itself stays in the login keychain."
+    },
+    {
+      "name": "SCHOLAY_AGENT_BRIDGE_TOKEN",
+      "type": "runtime",
+      "components": ["desktop"],
+      "required": false,
+      "purpose": "Per-session token between the desktop workbench and its MCP bridge. Generated at runtime; never stored."
+    },
+    {
+      "name": "RSSD_ASSISTANT_KEY",
+      "type": "runtime",
+      "components": ["desktop"],
+      "required": false,
+      "purpose": "Per-session key between the center assistant and its MCP proxy. Generated at runtime; never stored."
+    }
+  ]
+}
