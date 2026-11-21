@@ -11,7 +11,8 @@
     "admin-worker": "Publication worker service (admin/worker.mjs)",
     "admin-labels": "Labels collector service (admin/labels-collector.mjs)",
     "admin-cli": "Administrator import CLI on a workstation (admin/cli.mjs)",
-    "receiver": "RSSD receiver service (receiver/server.mjs)"
+    "receiver": "RSSD receiver service (receiver/server.mjs)",
+    "pin-bot": "Move submodule pins workflow in the rssd repository (GitHub Actions secret)"
   },
   "secrets": [
     {
@@ -144,6 +145,13 @@
       "components": ["desktop"],
       "required": false,
       "purpose": "Per-session key between the center assistant and its MCP proxy. Generated at runtime; never stored."
+    },
+    {
+      "name": "PIN_BOT_PRIVATE_KEY",
+      "type": "value",
+      "components": ["pin-bot"],
+      "required": true,
+      "purpose": "Private key of the rssd-pin-bot GitHub App. The workflow trades it for a short-lived installation token, so its pin pull requests start the required checks. Kept only as an Actions secret."
     }
   ]
 }
